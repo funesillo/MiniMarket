@@ -6,11 +6,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useProductos } from "../hooks/useGetProductos";
-import TablePagination from "@mui/material/TablePagination";
+import { Distribuidores } from "../mocks";
+import { TablePagination, TextField } from "@mui/material";
 import { useState } from "react";
-import TextField from "@mui/material/TextField";
 import React from "react";
+import { Distribuidor } from "../types/completeList";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,8 +32,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export const Index = () => {
-  const { objList, loading, error } = useProductos();
-
+  const Dist = Distribuidores;
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
   const [search, setSearch] = useState("");
@@ -42,26 +41,19 @@ export const Index = () => {
     setPage(0);
   }, [search]);
 
-  if (loading) return <div style={{ padding: 16 }}>Cargando productos…</div>;
-  if (error)
-    return <div style={{ padding: 16, color: "red" }}>Error: {error}</div>;
-  if (!objList || objList.length === 0)
-    return <div style={{ padding: 16 }}>No hay productos</div>;
-
-  const rows = objList.map((p) => ({
-    id: p?.id,
-    nombre: p?.nombre,
-    producto: p?.tipo_producto,
-    precio: p?.precio_venta,
-    codigo_barra: p?.codigo_barra,
-    stock: p?.stock,
+  const rows = Dist.map((p: Distribuidor, idx: number) => ({
+    id: idx,
+    nombre: p.nombre || "",
+    cuit: p.cuit || "",
+    direccion: p.direccion || "",
+    email: p.email || "",
+    telefono: p.telefono || 0,
   }));
 
   const filteredRows = rows.filter(
     (row) =>
-      row.nombre?.toLowerCase().includes(search.toLowerCase()) ||
-      row.producto?.toLowerCase().includes(search.toLowerCase()) ||
-      row.codigo_barra?.toLowerCase().includes(search.toLowerCase())
+      row.nombre?.toLowerCase().includes(search.toLowerCase())  ||
+      row.cuit?.toLowerCase().includes(search.toLowerCase()) 
   );
 
   const paginatedRows = filteredRows.slice(
@@ -69,49 +61,56 @@ export const Index = () => {
     page * rowsPerPage + rowsPerPage
   );
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-
+  
   return (
     <TableContainer
       component={Paper}
       sx={{
         width: "95% !important",
-        mt: 2, 
+        mt: 2,
         boxSizing: "border-box",
       }}
     >
       <TextField
-        label="Buscar producto"
+        label="Buscar Caja"
         variant="outlined"
         size="small"
         sx={{ mb: 2, mt: 0.7 }}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="producto o código"
+        placeholder="Fecha o Estado"
       />
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Stock</StyledTableCell>
-            <StyledTableCell align="right">Nombre</StyledTableCell>
-            <StyledTableCell align="right">Producto</StyledTableCell>
-            <StyledTableCell align="right">Precio</StyledTableCell>
-            <StyledTableCell align="right">Cod. Barra</StyledTableCell>
+            <StyledTableCell>Nombre</StyledTableCell>
+            <StyledTableCell align="right">Cuit</StyledTableCell>
+            <StyledTableCell align="right">Direccion</StyledTableCell>
+            <StyledTableCell align="right">Email</StyledTableCell>
+            <StyledTableCell align="right">Telefono</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {paginatedRows.map((row) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
-                {row.stock}
+                {row.nombre}
               </StyledTableCell>
-              <StyledTableCell align="right">{row.nombre}</StyledTableCell>
-              <StyledTableCell align="right">{row.producto}</StyledTableCell>
-              <StyledTableCell align="right">{row.precio}</StyledTableCell>
+
               <StyledTableCell align="right">
-                {row.codigo_barra}
+                {row.cuit}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {row.direccion}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {row.email}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {row.telefono}
               </StyledTableCell>
             </StyledTableRow>
           ))}

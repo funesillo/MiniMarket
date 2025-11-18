@@ -4,7 +4,7 @@ export default function histCaja() {
   return (
     <>
       <Layout>
-        <h1>Bienvenido Minimarket Aron</h1>
+        <h1>Bienvenido Minimarket Aron - Historial de Cajas</h1>
         <HistorialResumen />
       </Layout>
     </>

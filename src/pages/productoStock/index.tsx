@@ -4,7 +4,7 @@ export default function prodStock() {
   return (
     <>
       <Layout>
-        <h1 style={{margin: "10px"}}>Bienvenido Minimarket Aron</h1>
+        <h1 style={{margin: "10px"}}>Bienvenido Minimarket Aron - Stock de Productos</h1>
         <ProductTable />
       </Layout>
     </>

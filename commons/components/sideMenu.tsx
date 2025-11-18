@@ -92,7 +92,6 @@ export const Index: React.FC<SideMenuProps> = ({ onCollapse }) => {
         ))}
       </List>
 
-      {/* Botón al pie */}
       <Box
         sx={{
           position: "absolute",

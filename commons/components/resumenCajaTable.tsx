@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { CajasHist } from "../mocks";
-import { Caja } from "../types/completeList";
+import { CajaHistorial } from "../types/completeList";
 import { TablePagination, TextField } from "@mui/material";
 import { useState } from "react";
 import React from "react";
@@ -41,7 +41,7 @@ export const Index = () => {
     setPage(0);
   }, [search]);
 
-  const rows = caja.map((p: Caja, idx: number) => ({
+  const rows = caja.map((p: CajaHistorial, idx: number) => ({
     id: idx,
     fecha_apertura: p.fecha_apertura || "",
     fecha_cierre: p.fecha_cierre || "",
@@ -71,7 +71,7 @@ export const Index = () => {
       component={Paper}
       sx={{
         width: "95% !important",
-        mt: 2, // separación superior
+        mt: 2,
         boxSizing: "border-box",
       }}
     >

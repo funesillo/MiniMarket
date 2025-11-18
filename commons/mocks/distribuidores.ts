@@ -1,0 +1,88 @@
+import { Distribuidor } from "../types/completeList";
+
+export const Index: Distribuidor[] = [
+  {
+    nombre: "Distribuidora La Nueva",
+    cuit: "30-71234567-8",
+    telefono: "3515551111",
+    direccion: "Av. Siempre Viva 123",
+    email: "contacto@lanueva.com",
+  },
+  {
+    nombre: "Mayorista Centro",
+    cuit: "20-29876543-5",
+    telefono: "1122334455",
+    direccion: "Calle Central 456",
+    email: "ventas@maycentro.com",
+  },
+  {
+    nombre: "Distribuidora Norte",
+    cuit: "27-33445566-9",
+    telefono: "3794123456",
+    direccion: "Ruta 9 Km 20",
+    email: "info@norte.com",
+  },
+  {
+    nombre: "El Buen Sabor",
+    cuit: "30-99887766-5",
+    telefono: "1133445566",
+    direccion: "Mitre 2500",
+    email: "contacto@sabor.com",
+  },
+  {
+    nombre: "Proveedor del Sur",
+    cuit: "20-12344321-7",
+    telefono: "3814559988",
+    direccion: "Belgrano 800",
+    email: "proveedor@sur.com",
+  },
+  {
+    nombre: "Mayorista Oeste",
+    cuit: "27-55667788-1",
+    telefono: "3415552222",
+    direccion: "Av. Rivadavia 890",
+    email: "oeste@mayorista.com",
+  },
+  {
+    nombre: "Distribuidora Este",
+    cuit: "30-66554433-2",
+    telefono: "3564123456",
+    direccion: "Sargento Cabral 1500",
+    email: "este@dist.com",
+  },
+  {
+    nombre: "Suministros Argentinos",
+    cuit: "20-77889900-3",
+    telefono: "1144477788",
+    direccion: "Hipólito Yrigoyen 700",
+    email: "suministros@arg.com",
+  },
+  {
+    nombre: "Alimentos del Valle",
+    cuit: "30-44556677-4",
+    telefono: "1144223344",
+    direccion: "San Martín 1200",
+    email: "valle@alimentos.com",
+  },
+  {
+    nombre: "Distribuciones Global",
+    cuit: "27-22334455-6",
+    telefono: "3514778899",
+    direccion: "Córdoba 234",
+    email: "global@dist.com",
+  },
+  {
+    nombre: "Mayorista Norte Grande",
+    cuit: "20-99880011-2",
+    telefono: "3414557766",
+    direccion: "Belgrano 950",
+    email: "nortegrande@mayorista.com",
+  },
+  {
+    nombre: "Proveedora Central",
+    cuit: "30-33441122-3",
+    telefono: "3813445566",
+    direccion: "Juan B. Justo 500",
+    email: "central@provee.com",
+  },
+];

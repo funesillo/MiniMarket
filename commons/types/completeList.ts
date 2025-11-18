@@ -24,7 +24,7 @@ export type Items = {
   precio_unitario: number;
 };
 
-export type Caja = {
+export type CajaHistorial = {
   fecha_apertura: string;
   fecha_cierre: string | null;
   saldo_inicial: number;
@@ -32,15 +32,10 @@ export type Caja = {
   estado: 'abierta' | 'cerrada';
 }
 
-// export type ResumenCajas = {
-//   fecha: string;
-//   ventas_totales: number;
-//   ingresos: number;
-//   productos_stock_bajo: ResumenProductoStockBajo[];
-// };
-
-// export type ResumenProductoStockBajo = {
-//   id: number;
-//   nombre: string;
-//   stock: number;
-// };
+export interface Distribuidor {
+  nombre: string;
+  cuit: string;
+  telefono: string;
+  direccion: string;
+  email: string;
+}

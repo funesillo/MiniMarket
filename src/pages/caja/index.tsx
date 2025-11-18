@@ -4,7 +4,7 @@ export default function caja() {
   return (
     <>
       <Layout>
-        <h1>Bienvenido Minimarket Aron</h1>
+        <h1>Bienvenido Minimarket Aron - Caja</h1>
         <HistorialResumen />
       </Layout>
     </>

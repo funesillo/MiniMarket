@@ -1,4 +1,3 @@
-// src/components/SalesPOSIntegrated.tsx
 import React, { useMemo, useState } from "react";
 import {
   Box,
@@ -20,7 +19,6 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useProductos } from "../hooks/useGetProductos";
 import { usePostVenta } from "../hooks/usePostVenta";
 
-// Tipos simplificados locales (solo para estructura interna)
 type ListaProductos = {
   id: number;
   nombre: string;
@@ -52,10 +50,11 @@ export const Index = () => {
   const [items, setItems] = useState<ItemVentaLocal[]>([]);
   const [snack, setSnack] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
 
+  const DISABLE_POST = true;
+
   const total = useMemo(() => items.reduce((s, it) => s + it.precio_unitario * it.cantidad, 0), [items]);
   const fmt = (n: number) => n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // --- Añadir producto por código o id ---
   const handleAddByCode = (raw: string) => {
     const code = raw?.trim();
     if (!code) {
@@ -99,7 +98,6 @@ export const Index = () => {
 
   const handleRemove = (id_producto: number) => setItems((prev) => prev.filter((it) => it.id_producto !== id_producto));
 
-  // --- Checkout: arma payload mínimo y hace POST ---
   const handleCheckout = async () => {
     if (items.length === 0) {
       setSnack({ open: true, message: "No hay items para vender" });
@@ -109,7 +107,7 @@ export const Index = () => {
     const payload: VentaProductoPayload = {
       saldo_inicial: 0,
       total_venta: Number(Number(total).toFixed(2)),
-      id_medio_pago: 1, // por defecto; ajustá si necesitás UI para elegir
+      id_medio_pago: 1,
       items: items.map((it) => ({
         id_producto: it.id_producto,
         cantidad: it.cantidad,
@@ -118,6 +116,12 @@ export const Index = () => {
     };
 
     try {
+      if (DISABLE_POST) {
+        setSnack({ open: true, message: "Envio deshabilitado temporalmente" });
+        setItems([]);
+        return;
+      }
+
       await postVenta(payload);
       setSnack({ open: true, message: "Venta registrada correctamente" });
       setItems([]);
@@ -230,4 +234,4 @@ export const Index = () => {
       <Snackbar open={snack.open} autoHideDuration={3000} onClose={() => setSnack({ open: false, message: "" })} message={snack.message} />
     </Box>
   );
-}
+};

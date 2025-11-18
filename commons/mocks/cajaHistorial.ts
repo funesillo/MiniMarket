@@ -1,6 +1,6 @@
-import { Caja } from "../types/completeList";
+import { CajaHistorial } from "../types/completeList";
 
-export const Index: Caja[] = [
+export const Index: CajaHistorial[] = [
   {
     fecha_apertura: '2025-01-01',
     fecha_cierre: null,
