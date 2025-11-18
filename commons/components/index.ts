@@ -1,0 +1,5 @@
+export { Index as Layout } from './Layout'
+export { Index as ProductTable } from './producTable'
+export { Index as HistorialResumen } from './resumenCajaTable'
+export { Index as Ventas } from './ventaProd'
+export { Index as SideMenu } from './sideMenu'

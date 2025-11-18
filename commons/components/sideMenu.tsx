@@ -26,10 +26,10 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { collapsedWidth, drawerWidth, styles } from "../styles/sideMenuStyle";
 const navItems = [
   { text: "Ventas", href: "/", icon: <DashboardIcon /> },
-  { text: "Caja", href: "/", icon: <Inventory2Icon /> },
+  { text: "Caja", href: "/caja", icon: <Inventory2Icon /> },
   { text: "Stock", href: "/productoStock", icon: <ShoppingCartIcon /> },
-  { text: "Historial de compras", href: "/", icon: <PeopleIcon /> },
-  { text: "Historial de caja", href: "/", icon: <SettingsIcon /> },
+  { text: "Historial de compras", href: "/historialCompra", icon: <PeopleIcon /> },
+  { text: "Historial de caja", href: "/historialCaja", icon: <SettingsIcon /> },
 ];
 
 interface SideMenuProps {

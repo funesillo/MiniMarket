@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { SideMenu } from "..";
+import { SideMenu } from ".";
 import { collapsedWidth } from "../styles/sideMenuStyle";
 
 export const Index = ({ children }: { children: React.ReactNode }) => {

@@ -25,5 +25,5 @@ export const useProductos = () => {
     fetchAll();
   }, []);
 
-  return { data, loading, error, refetch: fetchAll };
+  return { objList :data, loading, error, refetch: fetchAll };
 };

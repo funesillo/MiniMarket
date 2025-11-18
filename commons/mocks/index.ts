@@ -1,0 +1,1 @@
+export { Index as CajasHist } from './cajaHistorial'

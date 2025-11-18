@@ -6,8 +6,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useResumenCaja } from "../hooks/useGetCajaResumen";
-import { ResumenCajas } from "../types/completeList";
+import { CajasHist } from "../mocks";
+import { Caja } from "../types/completeList";
+import { TablePagination, TextField } from "@mui/material";
+import { useState } from "react";
+import React from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -29,52 +32,99 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export const Index = () => {
-  const {data, loading, error} = useResumenCaja();
-  
-  if (loading) return <div style={{ padding: 16 }}>Cargando productos…</div>;
-  if (error) return <div style={{ padding: 16, color: "red" }}>Error: {error}</div>;
-  if (!data || data.length === 0) return <div style={{ padding: 16 }}>No hay productos</div>;
+  const caja = CajasHist;
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const [search, setSearch] = useState("");
 
-  const rows = data.map((p: ResumenCajas, idx: number) => ({
+  React.useEffect(() => {
+    setPage(0);
+  }, [search]);
+
+  const rows = caja.map((p: Caja, idx: number) => ({
     id: idx,
-    fecha: p.fecha || "",
-    ingresos: p.ingresos || 0,
-    productos_stock_bajo: p.productos_stock_bajo?.length || 0,
-    ventas_totales: p.ventas_totales || 0,
+    fecha_apertura: p.fecha_apertura || "",
+    fecha_cierre: p.fecha_cierre || "",
+    saldo_inicial: p.saldo_inicial || 0,
+    saldo_final: p.saldo_final || 0,
+    estado: p.estado || 0,
   }));
 
+  const filteredRows = rows.filter(
+    (row) =>
+      row.fecha_apertura?.toLowerCase().includes(search.toLowerCase())  ||
+      row.fecha_cierre?.toLowerCase().includes(search.toLowerCase()) ||
+      row.estado?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const paginatedRows = filteredRows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+    const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+  
   return (
     <TableContainer
       component={Paper}
       sx={{
-        width: "90%",
-        mx: "auto",
-        mt: 2,
+        width: "95% !important",
+        mt: 2, // separación superior
         boxSizing: "border-box",
       }}
     >
+      <TextField
+        label="Buscar Caja"
+        variant="outlined"
+        size="small"
+        sx={{ mb: 2, mt: 0.7 }}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Fecha o Estado"
+      />
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Fecha</StyledTableCell>
-            <StyledTableCell align="right">Ingresos</StyledTableCell>
-            <StyledTableCell align="right">Stock Bajo (cant.)</StyledTableCell>
-            <StyledTableCell align="right">Ventas Totales</StyledTableCell>
+            <StyledTableCell>Estado</StyledTableCell>
+            <StyledTableCell align="right">Fecha Apertura</StyledTableCell>
+            <StyledTableCell align="right">Fecha Cierre</StyledTableCell>
+            <StyledTableCell align="right">Saldo Inicial</StyledTableCell>
+            <StyledTableCell align="right">Saldo Final</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {paginatedRows.map((row) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
-                {row.fecha}
+                {row.estado}
               </StyledTableCell>
-              <StyledTableCell align="right">${row.ingresos}</StyledTableCell>
-              <StyledTableCell align="right">{row.productos_stock_bajo}</StyledTableCell>
-              <StyledTableCell align="right">${row.ventas_totales}</StyledTableCell>
+
+              <StyledTableCell align="right">
+                {row.fecha_apertura}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {row.fecha_cierre}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                ${row.saldo_inicial}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                ${row.saldo_final}
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        component="div"
+        count={filteredRows.length}
+        rowsPerPage={10}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPageOptions={[10]}
+      />
     </TableContainer>
   );
 };

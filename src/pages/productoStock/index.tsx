@@ -1,11 +1,11 @@
-import { Layout, ResumenStock } from "../../../commons";
+import { Layout, ProductTable } from "../../../commons/components";
 
-export default function Home() {
+export default function prodStock() {
   return (
     <>
       <Layout>
-        <h1>Bienvenido Minimarket Aron</h1>
-        <ResumenStock />
+        <h1 style={{margin: "10px"}}>Bienvenido Minimarket Aron</h1>
+        <ProductTable />
       </Layout>
     </>
   );

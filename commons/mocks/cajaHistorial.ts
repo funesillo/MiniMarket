@@ -1,0 +1,88 @@
+import { Caja } from "../types/completeList";
+
+export const Index: Caja[] = [
+  {
+    fecha_apertura: '2025-01-01',
+    fecha_cierre: null,
+    saldo_inicial: 10000,
+    saldo_final: null,
+    estado: 'abierta',
+  },
+  {
+    fecha_apertura: '2025-01-02',
+    fecha_cierre: '2025-01-02',
+    saldo_inicial: 8000,
+    saldo_final: 12000,
+    estado: 'cerrada',
+  },
+  {
+    fecha_apertura: '2025-01-03',
+    fecha_cierre: null,
+    saldo_inicial: 9000,
+    saldo_final: null,
+    estado: 'abierta',
+  },
+  {
+    fecha_apertura: '2025-01-04',
+    fecha_cierre: '2025-01-04',
+    saldo_inicial: 7000,
+    saldo_final: 9500,
+    estado: 'cerrada',
+  },
+  {
+    fecha_apertura: '2025-01-05',
+    fecha_cierre: null,
+    saldo_inicial: 11000,
+    saldo_final: null,
+    estado: 'abierta',
+  },
+  {
+    fecha_apertura: '2025-01-06',
+    fecha_cierre: '2025-01-06',
+    saldo_inicial: 9000,
+    saldo_final: 14000,
+    estado: 'cerrada',
+  },
+  {
+    fecha_apertura: '2025-01-07',
+    fecha_cierre: null,
+    saldo_inicial: 12000,
+    saldo_final: null,
+    estado: 'abierta',
+  },
+  {
+    fecha_apertura: '2025-01-08',
+    fecha_cierre: '2025-01-08',
+    saldo_inicial: 10000,
+    saldo_final: 13000,
+    estado: 'cerrada',
+  },
+  {
+    fecha_apertura: '2025-01-09',
+    fecha_cierre: null,
+    saldo_inicial: 8000,
+    saldo_final: null,
+    estado: 'abierta',
+  },
+  {
+    fecha_apertura: '2025-01-10',
+    fecha_cierre: '2025-01-10',
+    saldo_inicial: 11000,
+    saldo_final: 15000,
+    estado: 'cerrada',
+  },
+  {
+    fecha_apertura: '2025-01-11',
+    fecha_cierre: null,
+    saldo_inicial: 9500,
+    saldo_final: null,
+    estado: 'abierta',
+  },
+  {
+    fecha_apertura: '2025-01-12',
+    fecha_cierre: '2025-01-12',
+    saldo_inicial: 7000,
+    saldo_final: 9000,
+    estado: 'cerrada',
+  },
+];

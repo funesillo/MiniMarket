@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
-import { ResumenCajas } from "../types/completeList";
 
 export const useResumenCaja = () => {
-  const [data, setData] = useState<ResumenCajas[]>([]);
+  const [data, setData] = useState<[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -11,7 +10,7 @@ export const useResumenCaja = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await api.get("/api/productos/resumen-diario");
+      const res = await api.get("/api/productos/historial-cajas");
       setData(Array.isArray(res) ? res : res.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");

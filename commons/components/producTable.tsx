@@ -32,7 +32,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export const Index = () => {
-  const { data, loading, error } = useProductos();
+  const { objList, loading, error } = useProductos();
 
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
@@ -45,10 +45,10 @@ export const Index = () => {
   if (loading) return <div style={{ padding: 16 }}>Cargando productos…</div>;
   if (error)
     return <div style={{ padding: 16, color: "red" }}>Error: {error}</div>;
-  if (!data || data.length === 0)
+  if (!objList || objList.length === 0)
     return <div style={{ padding: 16 }}>No hay productos</div>;
 
-  const rows = data.map((p) => ({
+  const rows = objList.map((p) => ({
     id: p?.id,
     nombre: p?.nombre,
     producto: p?.tipo_producto,

@@ -11,57 +11,36 @@ export type ListaProductos = {
   distribuidora_nombre?: string;
 };
 
-// POST /api/productos/  (body)
-export type CreateProductoRequest = {
-  nombre: string;
-  codigo_barra: string;
-  unidad_medida: string;
-  precio_venta: number;
-  stock: number;
-  id_tipo_producto: number;
-  id_distribuidora: number;
-};
-export type CreateProductoResponse = {
-  id: number;
+export type ventaProducto = {
+  saldo_inicial: number;
+  total_venta: number;
+  id_medio_pago: number;
+  items: Items[];
 };
 
-// PUT /api/productos/:id  (body igual a CreateProductoRequest)
-export type UpdateProductoRequest = CreateProductoRequest;
-export type UpdateProductoResponse = {
-  actualizados: number;
-};
-
-// POST /api/productos/entrada-stock
-export type EntradaStockRequest = {
+export type Items = {
   id_producto: number;
   cantidad: number;
-};
-export type EntradaStockResponse = {
-  success: boolean;
-  nuevo_stock?: number;
-  mensaje?: string;
+  precio_unitario: number;
 };
 
-// GET /api/productos/movimientos/:id
-export type Movimiento = {
-  id: number;
-  id_producto: number;
-  tipo: "entrada" | "salida" | string;
-  cantidad: number;
-  fecha: string; // ISO datetime
-  usuario?: string;
-};
-export type MovimientosResponse = Movimiento[];
+export type Caja = {
+  fecha_apertura: string;
+  fecha_cierre: string | null;
+  saldo_inicial: number;
+  saldo_final: number | null;
+  estado: 'abierta' | 'cerrada';
+}
 
-// GET /api/productos/resumen-diario
-export type ResumenProductoStockBajo = {
-  id: number;
-  nombre: string;
-  stock: number;
-};
-export type ResumenCajas = {
-  fecha: string;
-  ventas_totales: number;
-  ingresos: number;
-  productos_stock_bajo: ResumenProductoStockBajo[];
-};
+// export type ResumenCajas = {
+//   fecha: string;
+//   ventas_totales: number;
+//   ingresos: number;
+//   productos_stock_bajo: ResumenProductoStockBajo[];
+// };
+
+// export type ResumenProductoStockBajo = {
+//   id: number;
+//   nombre: string;
+//   stock: number;
+// };
