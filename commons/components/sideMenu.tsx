@@ -25,11 +25,11 @@ import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { collapsedWidth, drawerWidth, styles } from "../styles/sideMenuStyle";
 const navItems = [
-  { text: "Dashboard", href: "/dashboard", icon: <DashboardIcon /> },
-  { text: "Productos", href: "/products", icon: <Inventory2Icon /> },
-  { text: "Ventas", href: "/sales", icon: <ShoppingCartIcon /> },
-  { text: "Clientes", href: "/customers", icon: <PeopleIcon /> },
-  { text: "Configuración", href: "/settings", icon: <SettingsIcon /> },
+  { text: "Ventas", href: "/", icon: <DashboardIcon /> },
+  { text: "Caja", href: "/", icon: <Inventory2Icon /> },
+  { text: "Stock", href: "/productoStock", icon: <ShoppingCartIcon /> },
+  { text: "Historial de compras", href: "/", icon: <PeopleIcon /> },
+  { text: "Historial de caja", href: "/", icon: <SettingsIcon /> },
 ];
 
 interface SideMenuProps {
@@ -52,7 +52,10 @@ export const Index: React.FC<SideMenuProps> = ({ onCollapse }) => {
   const open = isDesktop ? true : mobileOpen;
 
   const drawerContent = (
-    <Box sx={styles.navBox} role="presentation">
+    <Box
+      sx={{ ...styles.navBox, height: "100%", position: "relative", pb: 6 }}
+      role="presentation"
+    >
       <Toolbar sx={styles.toolbar(collapsed)}>
         <Typography
           variant="h6"
@@ -62,16 +65,6 @@ export const Index: React.FC<SideMenuProps> = ({ onCollapse }) => {
         >
           MiniMarket
         </Typography>
-
-        <IconButton
-          aria-label={collapsed ? "Mostrar menú" : "Ocultar menú"}
-          onClick={() => handleCollapse(!collapsed)}
-          className="toggleButton"
-          sx={styles.toggleButton}
-          size="small"
-        >
-          {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-        </IconButton>
       </Toolbar>
 
       <Divider />
@@ -88,7 +81,7 @@ export const Index: React.FC<SideMenuProps> = ({ onCollapse }) => {
               }}
             >
               <ListItemIcon sx={styles.listItemIcon(collapsed)}>
-                {item.icon}
+                {React.cloneElement(item.icon, { fontSize: "medium" })}
               </ListItemIcon>
               <ListItemText
                 primary={item.text}
@@ -98,6 +91,29 @@ export const Index: React.FC<SideMenuProps> = ({ onCollapse }) => {
           </ListItem>
         ))}
       </List>
+
+      {/* Botón al pie */}
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          pb: 2,
+          bgcolor: "background.paper",
+          borderTop: "1px solid #eee",
+        }}
+      >
+        <IconButton
+          aria-label={collapsed ? "Mostrar menú" : "Ocultar menú"}
+          onClick={() => handleCollapse(!collapsed)}
+          size="large"
+        >
+          {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+        </IconButton>
+      </Box>
     </Box>
   );
 

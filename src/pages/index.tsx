@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       <Layout>
-        <h1>Bienvenido Minimarket Aron</h1>
+        <h1 style={{margin: "10px"}}>Bienvenido Minimarket Aron</h1>
         <ProductTable />
       </Layout>
     </>
