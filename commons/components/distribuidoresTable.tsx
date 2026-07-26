@@ -1,67 +1,49 @@
-import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useMemo, useState, useCallback } from "react";
 import { Distribuidores } from "../mocks";
 import { TablePagination, TextField } from "@mui/material";
-import { useState } from "react";
-import React from "react";
-import { Distribuidor } from "../types/completeList";
+import { useTableSearchPagination } from "../hooks/useTableSearchPagination";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
+import type { Distribuidor } from "../types/completeList";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
+const ROWS_PER_PAGE = 10;
 
 export const Index = () => {
-  const Dist = Distribuidores;
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 10;
   const [search, setSearch] = useState("");
 
-  React.useEffect(() => {
-    setPage(0);
-  }, [search]);
-
-  const rows = Dist.map((p: Distribuidor, idx: number) => ({
-    id: idx,
-    nombre: p.nombre || "",
-    cuit: p.cuit || "",
-    direccion: p.direccion || "",
-    email: p.email || "",
-    telefono: p.telefono || 0,
-  }));
-
-  const filteredRows = rows.filter(
-    (row) =>
-      row.nombre?.toLowerCase().includes(search.toLowerCase())  ||
-      row.cuit?.toLowerCase().includes(search.toLowerCase()) 
+  const rows = useMemo(
+    () =>
+      Distribuidores.map((p: Distribuidor, idx: number) => ({
+        id: idx,
+        nombre: p.nombre || "",
+        cuit: p.cuit || "",
+        direccion: p.direccion || "",
+        email: p.email || "",
+        telefono: p.telefono || 0,
+      })),
+    []
   );
 
-  const paginatedRows = filteredRows.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+  const filterFn = useCallback(
+    (row: typeof rows[number], query: string) => {
+      const normalized = query.trim().toLowerCase();
+      return (
+        row.nombre.toLowerCase().includes(normalized) ||
+        row.cuit.toLowerCase().includes(normalized)
+      );
+    },
+    []
   );
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+  const { page, setPage, filteredRows, paginatedRows } =
+    useTableSearchPagination(rows, search, filterFn, ROWS_PER_PAGE);
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
   
@@ -75,13 +57,16 @@ export const Index = () => {
       }}
     >
       <TextField
-        label="Buscar Caja"
+        label="Buscar distribuidor"
         variant="outlined"
         size="small"
         sx={{ mb: 2, mt: 0.7 }}
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Fecha o Estado"
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setPage(0);
+        }}
+        placeholder="Nombre o CUIT"
       />
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>

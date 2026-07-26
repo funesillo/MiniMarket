@@ -9,16 +9,18 @@ export const usePostVenta = () => {
   const postVenta = useCallback(async (payload: ventaProducto) => {
     setLoading(true);
     setError(null);
+
     try {
-      const res = await api.post("/api/ventas", payload);
-      return res;
+      return await api.post("/api/ventas", payload);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido");
-      console.error("Error al obtener productos:", err);
+      const message = err instanceof Error ? err.message : "Error desconocido";
+      setError(message);
+      console.error("Error al enviar venta:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
   }, []);
 
   return { postVenta, loading, error };
-};
+};  

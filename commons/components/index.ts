@@ -1,4 +1,5 @@
 export { Index as Layout } from './Layout'
+export { Index as Page } from './Page'
 export { Index as ProductTable } from './producTable'
 export { Index as HistorialResumen } from './resumenCajaTable'
 export { Index as Distribuidora } from './distribuidoresTable'

@@ -1,71 +1,59 @@
-import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { CajasHist } from "../mocks";
-import { CajaHistorial } from "../types/completeList";
+import { useMemo, useState, useCallback } from "react";
+import { useResumenCaja } from "../hooks/useGetCajaResumen";
+import { useTableSearchPagination } from "../hooks/useTableSearchPagination";
+import { StyledTableCell, StyledTableRow } from "./StyledTable";
 import { TablePagination, TextField } from "@mui/material";
-import { useState } from "react";
-import React from "react";
+import type { CajaHistorial } from "../types/completeList";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
+const ROWS_PER_PAGE = 10;
 
 export const Index = () => {
-  const caja = CajasHist;
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 10;
+  const { data, loading, error } = useResumenCaja();
   const [search, setSearch] = useState("");
 
-  React.useEffect(() => {
-    setPage(0);
-  }, [search]);
-
-  const rows = caja.map((p: CajaHistorial, idx: number) => ({
-    id: idx,
-    fecha_apertura: p.fecha_apertura || "",
-    fecha_cierre: p.fecha_cierre || "",
-    saldo_inicial: p.saldo_inicial || 0,
-    saldo_final: p.saldo_final || 0,
-    estado: p.estado || 0,
-  }));
-
-  const filteredRows = rows.filter(
-    (row) =>
-      row.fecha_apertura?.toLowerCase().includes(search.toLowerCase())  ||
-      row.fecha_cierre?.toLowerCase().includes(search.toLowerCase()) ||
-      row.estado?.toLowerCase().includes(search.toLowerCase())
+  const rows = useMemo(
+    () =>
+      data.map((p: CajaHistorial, idx: number) => ({
+        id: idx,
+        fecha_apertura: p.fecha_apertura || "",
+        fecha_cierre: p.fecha_cierre ?? "",
+        saldo_inicial: p.saldo_inicial ?? 0,
+        saldo_final: p.saldo_final ?? 0,
+        estado: p.estado || "",
+      })),
+    [data]
   );
 
-  const paginatedRows = filteredRows.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+  const filterFn = useCallback(
+    (row: typeof rows[number], query: string) => {
+      const normalized = query.trim().toLowerCase();
+      return (
+        row.fecha_apertura.toLowerCase().includes(normalized) ||
+        row.fecha_cierre.toLowerCase().includes(normalized) ||
+        row.estado.toLowerCase().includes(normalized)
+      );
+    },
+    []
   );
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+  const { page, setPage, filteredRows, paginatedRows } =
+    useTableSearchPagination(rows, search, filterFn, ROWS_PER_PAGE);
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
-  
+
+  if (loading) return <div style={{ padding: 16 }}>Cargando historial de cajas…</div>;
+  if (error) return <div style={{ padding: 16, color: "red" }}>Error: {error}</div>;
+  if (!data || data.length === 0)
+    return <div style={{ padding: 16 }}>No hay historial de cajas</div>;
+
   return (
     <TableContainer
       component={Paper}
@@ -100,7 +88,6 @@ export const Index = () => {
               <StyledTableCell component="th" scope="row">
                 {row.estado}
               </StyledTableCell>
-
               <StyledTableCell align="right">
                 {row.fecha_apertura}
               </StyledTableCell>
@@ -120,11 +107,12 @@ export const Index = () => {
       <TablePagination
         component="div"
         count={filteredRows.length}
-        rowsPerPage={10}
+        rowsPerPage={ROWS_PER_PAGE}
         page={page}
         onPageChange={handleChangePage}
-        rowsPerPageOptions={[10]}
+        rowsPerPageOptions={[ROWS_PER_PAGE]}
       />
     </TableContainer>
   );
 };
+

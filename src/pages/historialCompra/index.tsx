@@ -1,12 +1,11 @@
-import { Layout, Distribuidora } from "../../../commons/components";
+import { Layout, Page, Distribuidora } from "../../../commons/components";
 
 export default function histComp() {
   return (
-    <>
-      <Layout>
-        <h1>Bienvenido Minimarket Aron - Distribuidores</h1>
+    <Layout>
+      <Page title="Bienvenido Minimarket Aron - Distribuidores">
         <Distribuidora />
-      </Layout>
-    </>
+      </Page>
+    </Layout>
   );
 }

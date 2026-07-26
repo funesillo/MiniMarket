@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Box,
   Paper,
@@ -19,13 +19,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useProductos } from "../hooks/useGetProductos";
 import { usePostVenta } from "../hooks/usePostVenta";
 
-type ListaProductos = {
-  id: number;
-  nombre: string;
-  codigo_barra: string;
-  precio_venta: number;
-  stock?: number;
-};
+const fmt = (value: number) =>
+  value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 type ItemVentaLocal = {
   id_producto: number;
@@ -35,101 +30,129 @@ type ItemVentaLocal = {
   cantidad: number;
 };
 
-type VentaProductoPayload = {
-  saldo_inicial: number;
-  total_venta: number;
-  id_medio_pago: number;
-  items: { id_producto: number; cantidad: number; precio_unitario: number }[];
-};
-
 export const Index = () => {
-  const { objList = [] } = useProductos() as { objList: ListaProductos[]; loading?: boolean };
+  const { objList = [], loading: productsLoading } = useProductos();
   const { postVenta, loading: posting } = usePostVenta();
 
   const [codeValue, setCodeValue] = useState("");
   const [items, setItems] = useState<ItemVentaLocal[]>([]);
   const [snack, setSnack] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
 
-  const DISABLE_POST = true;
+  const disablePost = process.env.NEXT_PUBLIC_DISABLE_POST === "true";
 
-  const total = useMemo(() => items.reduce((s, it) => s + it.precio_unitario * it.cantidad, 0), [items]);
-  const fmt = (n: number) => n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const productByBarcode = useMemo(
+    () => new Map(objList.map((product) => [product.codigo_barra, product] as const)),
+    [objList]
+  );
 
-  const handleAddByCode = (raw: string) => {
-    const code = raw?.trim();
-    if (!code) {
-      setSnack({ open: true, message: "Ingresá un código" });
-      return;
-    }
+  const productById = useMemo(
+    () => new Map(objList.map((product) => [product.id, product] as const)),
+    [objList]
+  );
 
-    let product = objList.find((p) => p.codigo_barra === code);
-    if (!product && /^\d+$/.test(code)) {
-      product = objList.find((p) => p.id === Number(code));
-    }
-    if (!product) {
-      setSnack({ open: true, message: "Producto no encontrado" });
-      return;
-    }
+  const total = useMemo(
+    () => items.reduce((sum, item) => sum + item.precio_unitario * item.cantidad, 0),
+    [items]
+  );
 
-    setItems((prev) => {
-      const exists = prev.find((it) => it.id_producto === product!.id);
-      if (exists) return prev.map((it) => (it.id_producto === product!.id ? { ...it, cantidad: it.cantidad + 1 } : it));
-      const newItem: ItemVentaLocal = {
-        id_producto: product.id,
-        nombre: product.nombre,
-        codigo_barra: product.codigo_barra,
-        precio_unitario: product.precio_venta,
-        cantidad: 1,
-      };
-      return [...prev, newItem];
-    });
+  const showSnack = useCallback((message: string) => {
+    setSnack({ open: true, message });
+  }, []);
 
-    setCodeValue("");
-  };
+  const handleAddByCode = useCallback(
+    (raw: string) => {
+      const code = raw?.trim();
+      if (!code) {
+        showSnack("Ingresá un código");
+        return;
+      }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleAddByCode(codeValue);
-  };
+      let product = productByBarcode.get(code);
+      if (!product && /^\d+$/.test(code)) {
+        product = productById.get(Number(code));
+      }
 
-  const handleChangeQty = (id_producto: number, cantidad: number) => {
+      if (!product) {
+        showSnack("Producto no encontrado");
+        return;
+      }
+
+      setItems((prev) => {
+        const exists = prev.find((item) => item.id_producto === product!.id);
+        if (exists) {
+          return prev.map((item) =>
+            item.id_producto === product!.id
+              ? { ...item, cantidad: item.cantidad + 1 }
+              : item
+          );
+        }
+
+        return [
+          ...prev,
+          {
+            id_producto: product.id,
+            nombre: product.nombre,
+            codigo_barra: product.codigo_barra,
+            precio_unitario: product.precio_venta,
+            cantidad: 1,
+          },
+        ];
+      });
+
+      setCodeValue("");
+    },
+    [productByBarcode, productById, showSnack]
+  );
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        handleAddByCode(codeValue);
+      }
+    },
+    [codeValue, handleAddByCode]
+  );
+
+  const handleChangeQty = useCallback((id_producto: number, cantidad: number) => {
     if (cantidad < 1) return;
-    setItems((prev) => prev.map((it) => (it.id_producto === id_producto ? { ...it, cantidad } : it)));
-  };
+    setItems((prev) => prev.map((item) => (item.id_producto === id_producto ? { ...item, cantidad } : item)));
+  }, []);
 
-  const handleRemove = (id_producto: number) => setItems((prev) => prev.filter((it) => it.id_producto !== id_producto));
+  const handleRemove = useCallback((id_producto: number) => {
+    setItems((prev) => prev.filter((item) => item.id_producto !== id_producto));
+  }, []);
 
-  const handleCheckout = async () => {
+  const handleCheckout = useCallback(async () => {
     if (items.length === 0) {
-      setSnack({ open: true, message: "No hay items para vender" });
+      showSnack("No hay items para vender");
       return;
     }
 
-    const payload: VentaProductoPayload = {
+    const payload = {
       saldo_inicial: 0,
-      total_venta: Number(Number(total).toFixed(2)),
+      total_venta: Number(total.toFixed(2)),
       id_medio_pago: 1,
-      items: items.map((it) => ({
-        id_producto: it.id_producto,
-        cantidad: it.cantidad,
-        precio_unitario: it.precio_unitario,
+      items: items.map((item) => ({
+        id_producto: item.id_producto,
+        cantidad: item.cantidad,
+        precio_unitario: item.precio_unitario,
       })),
     };
 
     try {
-      if (DISABLE_POST) {
-        setSnack({ open: true, message: "Envio deshabilitado temporalmente" });
+      if (disablePost) {
+        showSnack("Envío deshabilitado temporalmente");
         setItems([]);
         return;
       }
 
       await postVenta(payload);
-      setSnack({ open: true, message: "Venta registrada correctamente" });
+      showSnack("Venta registrada correctamente");
       setItems([]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setSnack({ open: true, message: err?.message ?? "Error al registrar venta" });
+    } catch (error) {
+      showSnack((error as Error)?.message ?? "Error al registrar venta");
     }
-  };
+  }, [disablePost, items, postVenta, showSnack, total]);
 
   return (
     <Box>
@@ -161,9 +184,9 @@ export const Index = () => {
             color="primary"
             onClick={handleCheckout}
             startIcon={<CheckIcon />}
-            disabled={items.length === 0 || posting}
+            disabled={items.length === 0 || posting || productsLoading}
           >
-            {posting ? "Guardando..." : `Cobrar • $${fmt(total)}`}
+            {productsLoading ? "Cargando productos..." : posting ? "Guardando..." : `Cobrar • $${fmt(total)}`}
           </Button>
         </Box>
       </Paper>

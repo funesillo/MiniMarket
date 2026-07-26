@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { api } from "../../lib/api";
 import { ListaProductos } from "../types/completeList";
 
@@ -7,7 +7,7 @@ export const useProductos = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -19,11 +19,11 @@ export const useProductos = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAll();
-  }, []);
+  }, [fetchAll]);
 
   return { objList :data, loading, error, refetch: fetchAll };
 };

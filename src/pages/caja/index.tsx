@@ -1,12 +1,11 @@
-import { Layout, HistorialResumen } from "../../../commons/components";
+import { Layout, Page, HistorialResumen } from "../../../commons/components";
 
 export default function caja() {
   return (
-    <>
-      <Layout>
-        <h1>Bienvenido Minimarket Aron - Caja</h1>
+    <Layout>
+      <Page title="Bienvenido Minimarket Aron - Caja">
         <HistorialResumen />
-      </Layout>
-    </>
+      </Page>
+    </Layout>
   );
 }

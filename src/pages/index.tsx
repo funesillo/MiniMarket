@@ -1,12 +1,11 @@
-import { Layout, Ventas } from "../../commons/components";
+import { Layout, Page, Ventas } from "../../commons/components";
 
 export default function Home() {
   return (
-    <>
-      <Layout>
-        <h1 style={{margin: "10px"}}>Bienvenido Minimarket Aron - Ventas</h1>
+    <Layout>
+      <Page title="Bienvenido Minimarket Aron - Ventas">
         <Ventas />
-      </Layout>
-    </>
+      </Page>
+    </Layout>
   );
 }

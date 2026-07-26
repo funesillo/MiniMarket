@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   Box,
   Drawer,
@@ -73,16 +74,16 @@ export const Index: React.FC<SideMenuProps> = ({ onCollapse }) => {
         {navItems.map((item) => (
           <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              component="a"
+              component={Link}
               href={item.href}
               sx={styles.listItemButton(collapsed)}
               onClick={() => {
                 if (!isDesktop) setMobileOpen(false);
               }}
             >
-              <ListItemIcon sx={styles.listItemIcon(collapsed)}>
-                {React.cloneElement(item.icon, { fontSize: "medium" })}
-              </ListItemIcon>
+                <ListItemIcon sx={styles.listItemIcon(collapsed)}>
+                  {React.cloneElement(item.icon, { fontSize: "medium" })}
+                </ListItemIcon>
               <ListItemText
                 primary={item.text}
                 sx={styles.listItemText(collapsed)}
